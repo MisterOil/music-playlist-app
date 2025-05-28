@@ -1,25 +1,33 @@
-import { useState, useCallback, type ChangeEvent } from "react";
+import { useState, useCallback, type ChangeEvent, useEffect } from "react";
 import { usePlaylistStore } from "../store/playlistStore";
-import { searchSongs } from "../services/mockApiService";
-import { debounce } from "../utils/helpers";
+import { searchSongs } from "../services/apiService";
+import { Icon } from '@iconify/react';
 
 const SearchBar = () => {
-  const { setSearchQuery, setSearchResults } = usePlaylistStore();
+  const { setSearchQuery, setSearchResults, isSearching  } = usePlaylistStore();
   const [inputValue, setInputValue] = useState("");
 
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    (query: string) => {
-      console.log(`Searching for: ${query}`);
+  useEffect(() => {
+    if (!isSearching) {
+      setInputValue("");
+      setSearchQuery("");
+      setSearchResults([]);
+    }
+  }, [isSearching, setSearchQuery, setSearchResults]);
 
-      debounce(async (query: string) => {
-        if (query.trim()) {
+  const performSearch = useCallback(
+    async (query: string) => {
+      if (query.trim()) {
+        try {
           const results = await searchSongs(query);
           setSearchResults(results);
-        } else {
+        } catch (error) {
+          console.error("Search failed:", error);
           setSearchResults([]);
         }
-      }, 500);
+      } else {
+        setSearchResults([]);
+      }
     },
     [setSearchResults]
   );
@@ -28,7 +36,13 @@ const SearchBar = () => {
     const value = e.target.value;
     setInputValue(value);
     setSearchQuery(value);
-    debouncedSearch(value);
+    performSearch(value);
+  };
+
+  const handleClear = () => {
+    setInputValue("");
+    setSearchQuery("");
+    setSearchResults([]);
   };
 
   return (
@@ -38,18 +52,14 @@ const SearchBar = () => {
         placeholder="Search for songs or artists"
         value={inputValue}
         onChange={handleInputChange}
-        className="px-4 py-2 w-72 rounded-full bg-gray-800 placeholder-gray-400 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+        className="px-4 py-2 w-72 rounded-full bg-neutral-800 placeholder-neutral-400 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500"
       />
       {inputValue && (
         <button
-          onClick={() => {
-            setInputValue("");
-            setSearchQuery("");
-            setSearchResults([]);
-          }}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+          onClick={handleClear}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-white"
         >
-          ×
+          <Icon icon="mdi:close" className="w-4 h-4" />
         </button>
       )}
     </div>

@@ -1,4 +1,7 @@
 import type { Playlist, Song } from "./playlistType"
+interface ToastFunction {
+  (message: string, type: 'success' | 'error' | 'info' | 'warning', duration?: number): void;
+}
 
 export interface PlaylistStore {
   playlists: Playlist[]
@@ -14,6 +17,17 @@ export interface PlaylistStore {
   allSongsOffset: number
   allSongsHasMore: boolean
   isLoadingAllSongs: boolean
+
+  // Playlist Songs pagination
+  playlistSongs: Song[]
+  playlistSongsTotal: number
+  playlistSongsLimit: number
+  playlistSongsOffset: number
+  playlistSongsHasMore: boolean
+  isLoadingPlaylistSongs: boolean
+
+  setToast: (toastFn: ToastFunction) => void
+  toast?: ToastFunction
   
   // Playlist actions
   createPlaylist: (name: string, description?: string) => Promise<Playlist>
@@ -31,9 +45,14 @@ export interface PlaylistStore {
   clearSearch: () => void
 
   // All Songs pagination actions
-  fetchAllSongs: (limit?: number, offset?: number) => Promise<void>
+  fetchAllSongs: (limit?: number, skip?: number) => Promise<void>
   setAllSongsLimit: (limit: number) => void
-  setAllSongsOffset: (offset: number) => void
+  setAllSongsOffset: (skip: number) => void
+
+  // Playlist Songs pagination actions
+  fetchPlaylistSongs: (playlistId: string, limit?: number, skip?: number) => Promise<void>
+  setPlaylistSongsLimit: (limit: number) => void
+  setPlaylistSongsOffset: (skip: number) => void
 
   // Initialize data
   initializePlaylists: () => Promise<void>

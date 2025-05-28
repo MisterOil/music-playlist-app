@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 import uuid
 from typing import List, Dict, Any, Optional
 from ..models.playlist import Playlist
+from ..models.song import Song
 from ..schemas.playlist import PlaylistCreate
 
 def get_playlists(db: Session, skip: int = 0, limit: int = 100) -> List[Playlist]:
@@ -58,8 +59,15 @@ def add_song_to_playlist(db: Session, playlist_id: str, song_id: str) -> Playlis
     playlist = get_playlist(db, playlist_id=playlist_id)
     if not playlist:
         return None
-    if song_id not in playlist.songs:
-        playlist.songs.append(song_id)
+    
+    # Get the song object
+    song = db.query(Song).filter(Song.id == song_id).first()
+    if not song:
+        return None
+    
+    # Check if song is already in playlist
+    if song not in playlist.songs:
+        playlist.songs.append(song)
         db.commit()
         db.refresh(playlist)
     return playlist

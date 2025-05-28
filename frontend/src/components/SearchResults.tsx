@@ -1,54 +1,40 @@
-import React, { useEffect } from "react";
 import { usePlaylistStore } from "../store/playlistStore";
-import { useToast } from "../contexts/ToastContext";
+import { useMemo } from "react";
 import type { Song } from "../types";
 import { Icon } from "@iconify/react";
 
-const AllSongsList = () => {
+const SearchResults = () => {
   const {
+    searchQuery,
     allSongs,
-    allSongsTotal,
-    allSongsLimit,
     allSongsOffset,
-    allSongsHasMore,
-    isLoadingAllSongs,
-    fetchAllSongs,
-    setAllSongsLimit,
-    setAllSongsOffset,
     playlists,
     addSongToPlaylist,
-    setToast,
+    isLoadingAllSongs,
   } = usePlaylistStore();
 
-  const { addToast } = useToast();
+  const filteredSongs = useMemo(() => {
+    if (!searchQuery.trim()) return [];
 
-  useEffect(() => {
-    setToast(addToast);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return allSongs.filter(
+      (song) =>
+        song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.album?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [allSongs, searchQuery]);
 
-  useEffect(() => {
-    fetchAllSongs();
-  }, [fetchAllSongs]);
+  if (filteredSongs.length === 0 && searchQuery) {
+    return (
+      <div className="text-center text-neutral-400 mt-8">
+        No results found for "{searchQuery}"
+      </div>
+    );
+  }
 
-  const handleNextPage = () => {
-    if (allSongsHasMore) {
-      const newOffset = allSongsOffset + allSongsLimit;
-      setAllSongsOffset(newOffset);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (allSongsOffset > 0) {
-      const newOffset = Math.max(0, allSongsOffset - allSongsLimit);
-      setAllSongsOffset(newOffset);
-    }
-  };
-
-  const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLimit = Number(e.target.value);
-    setAllSongsLimit(newLimit);
-  };
+  if (filteredSongs.length === 0) {
+    return null;
+  }
 
   const handleAddToPlaylist = async (song: Song, playlistId: string) => {
     try {
@@ -64,29 +50,13 @@ const AllSongsList = () => {
     }
   };
 
-  if (isLoadingAllSongs && allSongs.length === 0) {
-    return <div className="text-center py-10">Loading songs...</div>;
-  }
-
   return (
     <div className="w-full mt-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">All Songs</h2>
-        <div className="flex items-center space-x-2">
-          <span>Show:</span>
-          <select
-            value={allSongsLimit}
-            onChange={handleLimitChange}
-            className="bg-neutral-800 border border-neutral-700 rounded px-2 py-1"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
+      {filteredSongs.length === 0 && searchQuery && (
+        <div className="text-center text-neutral-400 mt-8">
+          No results found for "{searchQuery}"
         </div>
-      </div>
-
+      )}
       <table className="w-full text-left">
         <thead>
           <tr className="text-neutral-400 border-b border-neutral-800 text-sm">
@@ -98,7 +68,7 @@ const AllSongsList = () => {
           </tr>
         </thead>
         <tbody>
-          {allSongs.map((song, index) => (
+          {filteredSongs.map((song, index) => (
             <tr
               key={song.id}
               className="hover:bg-neutral-800 group text-neutral-300 text-sm"
@@ -151,40 +121,13 @@ const AllSongsList = () => {
         </tbody>
       </table>
 
-      {allSongs.length === 0 && !isLoadingAllSongs && (
+      {filteredSongs.length === 0 && !isLoadingAllSongs && (
         <div className="text-center py-10 text-neutral-400">
           No songs available
         </div>
       )}
-
-      <div className="flex justify-between items-center mt-4">
-        <div>
-          Showing {allSongsTotal > 0 ? allSongsOffset + 1 : 0} -{" "}
-          {Math.min(allSongsOffset + allSongsLimit, allSongsTotal)} of{" "}
-          {allSongsTotal}
-        </div>
-        <div className="flex space-x-2">
-          <button
-            onClick={handlePrevPage}
-            disabled={allSongsOffset <= 0 || isLoadingAllSongs}
-            className="px-4 py-2 bg-neutral-800 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-700 transition-colors"
-          >
-            {isLoadingAllSongs ? "Loading..." : "Previous"}
-          </button>
-          <span className="px-4 py-2 text-neutral-400">
-            Page {Math.floor(allSongsOffset / allSongsLimit) + 1}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={!allSongsHasMore || isLoadingAllSongs}
-            className="px-4 py-2 bg-neutral-800 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-700 transition-colors"
-          >
-            {isLoadingAllSongs ? "Loading..." : "Next"}
-          </button>
-        </div>
-      </div>
     </div>
   );
 };
 
-export default AllSongsList;
+export default SearchResults;

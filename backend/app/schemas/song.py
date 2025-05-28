@@ -19,9 +19,15 @@ class Song(SongBase):
     class Config:
         from_attributes = True
 
+class SongInPlaylist(Song):
+    playlist_id: str
+    
+    class Config:
+        from_attributes = True
+
 class SongList(BaseModel):
     items: List[Song]
     total: int
     limit: int
-    offset: int
+    skip: int
     has_more: bool

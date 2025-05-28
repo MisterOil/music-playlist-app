@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/react": "^6.0.0",
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/vite": "^4.1.7",
     "@types/uuid": "^10.0.0",

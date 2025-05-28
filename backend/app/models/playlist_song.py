@@ -8,5 +8,5 @@ class PlaylistSong(Base):
     playlist_id = Column(String, ForeignKey("playlists.id"), primary_key=True)
     song_id = Column(String, ForeignKey("songs.id"), primary_key=True)
 
-    playlist = relationship("Playlist", back_populates="playlist_songs")
-    song = relationship("Song", back_populates="playlist_songs")
+    playlist = relationship("Playlist", back_populates="playlist_songs", overlaps="playlists,songs")
+    song = relationship("Song", back_populates="playlist_songs", overlaps="playlists,songs")

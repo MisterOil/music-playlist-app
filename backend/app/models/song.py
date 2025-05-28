@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from ..database import Base
-from .playlist_song import PlaylistSong
 
 class Song(Base):
     __tablename__ = "songs"
@@ -13,7 +12,6 @@ class Song(Base):
     album_img = Column(String, nullable=True)
     duration = Column(String, nullable=True)
     added_at = Column(DateTime, default=func.now())
-    playlist_id = Column(String, ForeignKey("playlists.id"), nullable=True)
 
-    playlist = relationship("Playlist", back_populates="songs")
-    playlist_songs = relationship("PlaylistSong", back_populates="song", cascade="all, delete-orphan")
+    playlists = relationship("Playlist", secondary="playlist_songs", back_populates="songs", overlaps="playlist_songs")
+    playlist_songs = relationship("PlaylistSong", back_populates="song", cascade="all, delete-orphan", overlaps="playlists,songs")

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: music-playlist-app-backend:latest
+    container_name: music-playlist-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///./data/music_playlists.db
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - music-playlist-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: music-playlist-app-frontend:latest
+    container_name: music-playlist-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://backend:8000/
+    networks:
+      - music-playlist-network
+    restart: unless-stopped
+
+networks:
+  music-playlist-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

@@ -63,18 +63,25 @@ export const deletePlaylist = async (id: string): Promise<void> => {
 };
 
 // Song API calls
-export const fetchAllSongs = async (limit = 10, offset = 0): Promise<{
+export const fetchAllSongs = async (limit = 10, skip = 0): Promise<{
   items: Song[];
   total: number;
   limit: number;
-  offset: number;
+  skip: number;
   hasMore: boolean;
 }> => {
-  const response = await fetch(`${API_URL}/songs?limit=${limit}&offset=${offset}`);
+  const response = await fetch(`${API_URL}/songs?limit=${limit}&skip=${skip}`);
   if (!response.ok) {
     throw new Error("Failed to fetch songs");
   }
-  return response.json();
+  const data = await response.json();
+  return {
+    items: data.items,
+    total: data.total,
+    limit: data.limit,
+    skip: data.skip,
+    hasMore: data.has_more, // Convert snake_case to camelCase
+  };
 };
 
 export const addSongToPlaylist = async (
@@ -89,16 +96,54 @@ export const addSongToPlaylist = async (
     body: JSON.stringify(song),
   });
   if (!response.ok) {
-    throw new Error("Failed to add song");
+    throw new Error("Failed to add song to playlist");
   }
   return response.json();
 };
 
-export const removeSongFromPlaylist = async (songId: string): Promise<void> => {
-  const response = await fetch(`${API_URL}/songs/${songId}`, {
+export const removeSongFromPlaylist = async (playlistId: string, songId: string): Promise<void> => {
+  const response = await fetch(`${API_URL}/songs/${playlistId}/${songId}`, {
     method: "DELETE",
   });
   if (!response.ok) {
     throw new Error("Failed to remove song");
   }
+};
+
+export const fetchPlaylistSongs = async (playlistId: string, limit = 10, skip = 0): Promise<{
+  items: Song[];
+  total: number;
+  limit: number;
+  skip: number;
+  hasMore: boolean;
+}> => {
+  const response = await fetch(`${API_URL}/songs/${playlistId}?limit=${limit}&skip=${skip}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch playlist songs");
+  }
+  const data = await response.json();
+  return {
+    items: data.items,
+    total: data.total,
+    limit: data.limit,
+    skip: data.skip,
+    hasMore: data.has_more,
+  };
+};
+
+export const searchSongs = async (query: string): Promise<Song[]> => {
+  const response = await fetch(`${API_URL}/songs?limit=100&skip=0`);
+  if (!response.ok) {
+    throw new Error("Failed to search songs");
+  }
+  const data = await response.json();
+  
+  // Filter songs based on query
+  const filteredSongs = data.items.filter((song: Song) =>
+    song.title.toLowerCase().includes(query.toLowerCase()) ||
+    song.artist.toLowerCase().includes(query.toLowerCase()) ||
+    (song.album && song.album.toLowerCase().includes(query.toLowerCase()))
+  );
+  
+  return filteredSongs;
 };

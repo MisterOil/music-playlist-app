@@ -122,7 +122,6 @@ def generate_mock_songs() -> List[Song]:
             album=song_data["album"],
             album_img=song_data["album_img"],
             duration=song_data["duration"],
-            playlist_id=None,
             added_at=datetime.now()
         )
         mock_songs.append(song)

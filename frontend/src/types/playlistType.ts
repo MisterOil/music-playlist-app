@@ -5,17 +5,18 @@ export interface Song {
   album?: string
   album_img?: string
   duration?: string
-  addedAt?: string
+  added_at?: string
 }
 
 export interface Playlist {
   id: string
   name: string
   description?: string
-  coverImage?: string
+  cover_image?: string
   songs: Song[]
-  createdBy?: string
-  songCount?: number
+  created_at?: string
+  updated_at?: string
+  song_count?: number
   duration?: string
 }
 

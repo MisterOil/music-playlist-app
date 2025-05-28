@@ -15,10 +15,13 @@ class Playlist(PlaylistBase):
     id: str
     created_at: datetime
     updated_at: datetime
-    songs: List[str] = []  # Add a field to represent song IDs
     
     class Config:
         from_attributes = True
 
 class PlaylistWithSongs(Playlist):
     songs: List[Song] = []
+    song_count: Optional[int] = None
+    
+    class Config:
+        from_attributes = True
