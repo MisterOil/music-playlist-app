@@ -7,18 +7,34 @@ export interface PlaylistStore {
   isSearching: boolean
   searchQuery: string
   
+  // All Songs pagination
+  allSongs: Song[]
+  allSongsTotal: number
+  allSongsLimit: number
+  allSongsOffset: number
+  allSongsHasMore: boolean
+  isLoadingAllSongs: boolean
+  
   // Playlist actions
-  createPlaylist: (name: string, description?: string) => void
-  setCurrentPlaylist: (id: string) => void
-  updatePlaylist: (id: string, updates: Partial<Playlist>) => void
-  deletePlaylist: (id: string) => void
+  createPlaylist: (name: string, description?: string) => Promise<Playlist>
+  setCurrentPlaylist: (id: string) => Promise<void>
+  updatePlaylist: (id: string, updates: Partial<Playlist>) => Promise<Playlist>
+  deletePlaylist: (id: string) => Promise<void>
   
   // Song actions
-  addSongToPlaylist: (playlistId: string, song: Song) => void
-  removeSongFromPlaylist: (playlistId: string, songId: string) => void
+  addSongToPlaylist: (playlistId: string, song: Omit<Song, "id" | "addedAt">) => Promise<Song>
+  removeSongFromPlaylist: (playlistId: string, songId: string) => Promise<void>
   
   // Search actions
   setSearchQuery: (query: string) => void
   setSearchResults: (results: Song[]) => void
   clearSearch: () => void
+
+  // All Songs pagination actions
+  fetchAllSongs: (limit?: number, offset?: number) => Promise<void>
+  setAllSongsLimit: (limit: number) => void
+  setAllSongsOffset: (offset: number) => void
+
+  // Initialize data
+  initializePlaylists: () => Promise<void>
 }

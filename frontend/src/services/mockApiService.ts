@@ -8,7 +8,7 @@ const songDatabase: Song[] = [
     title: "Shut Up and Dance",
     artist: "Walk the Moon",
     album: "Talking Is Hard",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/shutup/150/150",
     duration: "3:19"
   },
   {
@@ -16,7 +16,7 @@ const songDatabase: Song[] = [
     title: "Cough Syrup",
     artist: "Young the Giant",
     album: "Young the Giant (Special Edition)",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/cough/150/150",
     duration: "4:10"
   },
   {
@@ -24,7 +24,7 @@ const songDatabase: Song[] = [
     title: "Pumped Up Kicks",
     artist: "Foster the People",
     album: "Torches",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/pumped/150/150",
     duration: "4:00"
   },
   {
@@ -32,7 +32,7 @@ const songDatabase: Song[] = [
     title: "Take a Walk",
     artist: "Passion Pit",
     album: "Gossamer",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/walk/150/150",
     duration: "4:24"
   },
   {
@@ -40,7 +40,7 @@ const songDatabase: Song[] = [
     title: "Work This Body",
     artist: "Walk the Moon",
     album: "Talking Is Hard",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/work/150/150",
     duration: "3:36"
   },
   {
@@ -48,7 +48,7 @@ const songDatabase: Song[] = [
     title: "Radioactive",
     artist: "Imagine Dragons",
     album: "Night Visions",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/radio/150/150",
     duration: "3:07"
   },
   {
@@ -56,7 +56,7 @@ const songDatabase: Song[] = [
     title: "Everybody Talks",
     artist: "Neon Trees",
     album: "Picture Show (Deluxe Edition)",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/talks/150/150",
     duration: "2:57"
   },
   {
@@ -64,7 +64,7 @@ const songDatabase: Song[] = [
     title: "Little Talks",
     artist: "Of Monsters and Men",
     album: "My Head Is An Animal",
-    albumImg: "https://via.placeholder.com/150",
+    albumImg: "https://picsum.photos/seed/little/150/150",
     duration: "4:27"
   }
 ];

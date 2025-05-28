@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePlaylistStore } from "../store/playlistStore";
-import SongsList from "../components/SongsList";
 import PlaylistHeader from "../components/PlaylistHeader";
-import Card from "../components/Card";
+import AllSongsList from "../components/AllSongsList";
 
 const MainPage = () => {
-  const { currentPlaylist, searchResults, isSearching, searchQuery } = usePlaylistStore();
+  const { currentPlaylist, isSearching, searchQuery, fetchAllSongs } = usePlaylistStore();
   const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
   
-  // Handle playlist editing, deletion, etc.
+  useEffect(() => {
+    fetchAllSongs();
+  }, [fetchAllSongs]);
+  
   const handleEditPlaylist = () => {
     setShowPlaylistMenu(!showPlaylistMenu);
   };
@@ -17,7 +19,6 @@ const MainPage = () => {
     return (
       <main className="flex-1 bg-black text-white p-6 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-6">Search Results for "{searchQuery}"</h1>
-        <SongsList songs={searchResults} isSearchResults={true} />
       </main>
     );
   }
@@ -46,31 +47,18 @@ const MainPage = () => {
               ▶
             </button>
             
-            <SongsList songs={currentPlaylist.songs} />
+            {/* <SongsList songs={currentPlaylist.songs} /> */}
           </div>
         </div>
       </main>
     );
   }
-  
-  // Default view when no playlist is selected and not searching
   return (
     <main className="flex-1 bg-black text-white p-6 overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4">Welcome to Your Music App 🎵</h1>
       
       <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4">Your Playlists</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {usePlaylistStore.getState().playlists.map((playlist) => (
-            <div key={playlist.id} className="cursor-pointer" onClick={() => usePlaylistStore.getState().setCurrentPlaylist(playlist.id)}>
-              <Card 
-                id={playlist.id} 
-                title={playlist.name} 
-                artist={`${playlist.songCount || 0} songs`} 
-              />
-            </div>
-          ))}
-        </div>
+        <AllSongsList />
       </div>
     </main>
   );

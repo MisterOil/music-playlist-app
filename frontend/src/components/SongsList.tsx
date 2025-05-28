@@ -12,7 +12,6 @@ const SongsList = ({ songs, isSearchResults = false }: SongsListProps) => {
   const handleAddToPlaylist = (song: Song, playlistId: string) => {
     addSongToPlaylist(playlistId, {
       ...song,
-      addedAt: new Date().toISOString(),
     });
   };
 
@@ -38,7 +37,6 @@ const SongsList = ({ songs, isSearchResults = false }: SongsListProps) => {
             <th className="pb-2 pl-4">#</th>
             <th className="pb-2">TITLE</th>
             <th className="pb-2">ALBUM</th>
-            <th className="pb-2">DATE ADDED</th>
             <th className="pb-2 pr-4 text-right">DURATION</th>
             <th className="pb-2 pr-4"></th>
           </tr>
@@ -64,7 +62,6 @@ const SongsList = ({ songs, isSearchResults = false }: SongsListProps) => {
                 </div>
               </td>
               <td className="py-3">{song.album || "-"}</td>
-              <td className="py-3">{song.addedAt ? new Date(song.addedAt).toLocaleDateString() : "-"}</td>
               <td className="py-3 pr-4 text-right">{song.duration || "-"}</td>
               <td className="py-3 pr-4 text-right">
                 <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">

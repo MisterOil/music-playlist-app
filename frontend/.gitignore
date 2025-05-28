@@ -22,3 +22,43 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Testing
+coverage/
+__tests__/__coverage__/
+.nyc_output/
+
+# Build and cache
+.cache/
+.parcel-cache/
+.rollup.cache/
+.next/
+out/
+storybook-static/
+.turbo/
+tsconfig.tsbuildinfo
+.vite/
+
+# Temporary files
+.temp/
+.tmp/
+tmp/
+temp/
+
+# Package manager specific
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnpm-store/
+
+# IDE specific
+.vscode-test/
+.devcontainer/
